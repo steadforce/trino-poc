@@ -13,7 +13,7 @@ trino:
   server:
     workers: 1
   additionalCatalogs:
-    rdbms: |-
+    postgres: |-
       connector.name=postgresql
       connection-url=jdbc:postgresql://flink-postgres-cluster.flink-demo.svc.cluster.local:5432/flink
       connection-user=${ENV:POSTGRES_USER}
