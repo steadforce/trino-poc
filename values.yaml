@@ -13,6 +13,11 @@ trino:
   server:
     workers: 1
   additionalCatalogs:
+    rdbms: |-
+      connector.name=postgresql
+      connection-url=jdbc:postgresql://flink-postgres-cluster.flink-demo.svc.cluster.local:5432/flink
+      connection-user=${ENV:POSTGRES_USER}
+      connection-password=${ENV:POSTGRES_PASSWORD}
     kafka: |-
       connector.name=kafka
       kafka.nodes=kafka-kafka-bootstrap.kafka.svc.cluster.local:9092
@@ -44,3 +49,13 @@ trino:
         secretKeyRef:
           name: minio-cred-secret-mirror
           key: secretkey
+    - name: POSTGRES_USER
+      valueFrom:
+        secretKeyRef:
+          name: postgres-cred-secret-mirror
+          key: username
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgres-cred-secret-mirror
+          key: password
