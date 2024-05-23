@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trino-datasource
+  labels:
+    app.kubernetes.io/name: trino-datasource
+    app.kubernetes.io/part-of: {{ $.Release.Name }}
+    grafana_datasource: "1"
+data:
+  trinodatasource.yaml: |-
+    apiVersion: 1
+    datasources:
+      - name: Trino
+        type: trino-datasource
+        uid: trino
+        url: http://trino.trino.svc.cluster.local:8080
+        isDefault: false

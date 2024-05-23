@@ -1,0 +1,26 @@
+{{- $dashboards := .Files.Glob "grafana-dashboards/*.json" }}
+{{- range $dashboardPath, $binary := $dashboards }}
+{{- $dashboardBase := base $dashboardPath }}
+
+{{- $dashboardContent := $dashboards.Get $dashboardPath }}
+{{- $pattern := "\"uid\":\\s*\"\\S*?\"" }}
+{{- $uidMatches := regexFindAll $pattern $dashboardContent -1}}
+{{ $uid := last $uidMatches }} # custom data-sources also have uid and come prior to dashboard uid
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-{{ trimSuffix ".json" $dashboardBase }}
+  labels:
+    app.kubernetes.io/name: dashboard-{{ trimSuffix ".json" $dashboardBase }}
+    app.kubernetes.io/part-of: {{ $.Release.Name }}
+    grafana_dashboard: "1"
+data:
+  {{ $dashboardBase }}: >
+{{- if eq $uid "" }}
+{{ $dashboards.Get $dashboardPath | indent 4 }}
+{{- else }}
+{{ $dashboards.Get $dashboardPath | replace $uid "\"uid\": null" | indent 4 }}
+{{- end}}
+
+---
+{{- end }}
