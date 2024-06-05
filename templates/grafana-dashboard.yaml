@@ -1,4 +1,4 @@
-{{- $dashboards := .Files.Glob "grafana-dashboards/*.json" }}
+{{- $dashboards := .Files.Glob "dashboards/*.json" }}
 {{- range $dashboardPath, $binary := $dashboards }}
 {{- $dashboardBase := base $dashboardPath }}
 
